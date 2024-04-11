@@ -29,37 +29,37 @@
 
 static struct UsbHidCommunication usbHidCommunicator;
 
-static size_t effectiveCommand = NULL;
-static byte lastCommandReceived = NULL;
-static byte previousCommandReceived = NULL;
-static byte lastFeatureSent = NULL;
-static BOOL featureSent = NULL;
+static byte effectiveCommand = 0;
+static byte lastCommandReceived = NONE;
+static byte previousCommandReceived = NONE;
+static byte lastFeatureSent = 0;
+static BOOL featureSent = 0;
 
 /* Gets the effective command applied to the device after a waitForCommand or waitForExternalCommand
  * Effective command contains buttons (Command) that are activated or deactivated (Action)
  */
-static size_t getEffectiveCommand()
+static byte getEffectiveCommand(void)
 {
 	return effectiveCommand;
 }
 
 /* Gets the last command received from the device during a waitForCommand or waitForExternalCommand
  */
-static byte getLastCommandReceived()
+static byte getLastCommandReceived(void)
 {
 	return lastCommandReceived;
 }
 
 /* Gets the previous command received from the device after a waitForCommand or waitForExternalCommand
  */
-static byte getPreviousCommandReceived()
+static byte getPreviousCommandReceived(void)
 {
 	return previousCommandReceived;
 }
 
 /* Gets the last feature sent to the device during a forceFeature or sendFeature
  */
-static byte getLastFeatureSent()
+static byte getLastFeatureSent(void)
 {
 	return lastFeatureSent;
 }
@@ -83,14 +83,14 @@ return !(previousCommandReceived & command) && (lastCommandReceived & command);
 /* Determines whether the specified button has been activated during a waitForcommand or waitForExternalCommand.
  * A button is activated if its a new command and different from the last feature sent.
  */
-static BOOL isButtonActivated(size_t command)
+static BOOL isButtonActivated(byte command)
 {
 	return !(lastFeatureSent & command) && (effectiveCommand & command) && (effectiveCommand & ACTIVATED);
 }
 
 /* Determines whether the specified button is active on the device.
   */
-static BOOL isButtonActive(size_t command)
+static BOOL isButtonActive(byte command)
 {
 	return (usbHidCommunicator.getInputReport() & command);
 }
@@ -98,14 +98,14 @@ static BOOL isButtonActive(size_t command)
 /* Determines whether the specified button has been deactivated during a waitForcommand or waitForExternalCommand.
  * A button is deactivated if its a new command and different from the last feature sent.
  */
-static BOOL isButtonDeactivated(size_t command)
+static BOOL isButtonDeactivated(byte command)
 {
 	return !(lastFeatureSent & command) && (effectiveCommand & command) && (effectiveCommand & DEACTIVATED);
 }
 
 /* Determines whether the specified button is inactive on the device.
  */
-static BOOL isButtonInactive(size_t command)
+static BOOL isButtonInactive(byte command)
 {
 	return !(usbHidCommunicator.getInputReport() & command);
 }
@@ -138,11 +138,11 @@ static BOOL loadDevice()
 */
 static void resetDevice()
 {
-	effectiveCommand = NULL;
-	lastCommandReceived = NULL;
-	previousCommandReceived = NULL;
-	lastFeatureSent = NULL;
-	featureSent = NULL;
+	effectiveCommand = 0;
+	lastCommandReceived = NONE;
+	previousCommandReceived = NONE;
+	lastFeatureSent = 0;
+	featureSent = 0;
 	usbHidCommunicator.forceFeature(NONE);
 	usbHidCommunicator.forceFeature(NONE);
 }
@@ -182,11 +182,11 @@ static BOOL waitForCommand()
 		else
 			effectiveCommand = command | DEACTIVATED;
 
-		snprintf(debugOutput, 65, "waitForCommand:lastFeatureSent:%d", lastFeatureSent);
+		snprintf(debugOutput, 65, "waitForCommand:lastFeatureSent:%u", lastFeatureSent);
 		OutputDebugString(debugOutput);
-		snprintf(debugOutput, 65, "waitForCommand:lastCommandReceived:%d", lastCommandReceived);
+		snprintf(debugOutput, 65, "waitForCommand:lastCommandReceived:%u", lastCommandReceived);
 		OutputDebugString(debugOutput);
-		snprintf(debugOutput, 65, "waitForCommand:effectiveCommand:%d", effectiveCommand);
+		snprintf(debugOutput, 65, "waitForCommand:effectiveCommand:%u", effectiveCommand);
 		OutputDebugString(debugOutput);		
 	}
 	else
@@ -216,7 +216,7 @@ static BOOL waitForExternalCommand()
 
 /* Forces a feature to the device (sent immediately)
 */
-static BOOL forceFeature(size_t command)
+static BOOL forceFeature(byte command)
 {
 	featureSent = usbHidCommunicator.forceFeature(command);
 	if (featureSent)
@@ -229,7 +229,7 @@ static BOOL forceFeature(size_t command)
 
 /* Sends a feature to the device when its available
 */
-static BOOL sendFeature(size_t command)
+static BOOL sendFeature(byte command)
 {
 	featureSent = usbHidCommunicator.sendFeature(command);
 	if (featureSent)
@@ -242,7 +242,7 @@ static BOOL sendFeature(size_t command)
 
 /* Activate the specified button
 */
-static BOOL activateButton(size_t command)
+static BOOL activateButton(byte command)
 {
 	byte currentFeature;
 	currentFeature = usbHidCommunicator.getInputReport();
@@ -256,7 +256,7 @@ static BOOL activateButton(size_t command)
 
 /* Deactivate the specified button
 */
-static BOOL deactivateButton(size_t command)
+static BOOL deactivateButton(byte command)
 {
 	byte currentFeature;
 	currentFeature = usbHidCommunicator.getInputReport();

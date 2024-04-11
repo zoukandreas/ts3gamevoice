@@ -36,9 +36,10 @@ extern "C" {
 #endif
 
 #include "stdafx.h"
+
 #include "plugin_definitions.h"
-#include "public_errors.h"
-#include "public_errors_rare.h"
+#include "teamspeak/public_errors.h"
+#include "teamspeak/public_errors_rare.h"
 #include "ts3_functions.h"
 
 // Code is here in header file to share CONST definitions 
@@ -190,7 +191,7 @@ BOOL joinChannel(uint64 scHandlerID, uint64 channel)
 	anyID self;
 	char message[20];
 	
-	snprintf(message, sizeof(message), "joinChannel:%d", channel);
+	snprintf(message, sizeof(message), "joinChannel:%zu", channel);
 	ts3Functions.logMessage(message, LogLevel_DEBUG, "Gamevoice Plugin", 0);
 
 	if(logOnError(ts3Functions.getClientID(scHandlerID, &self), "Error getting own client id"))
@@ -233,11 +234,12 @@ BOOL SetWhisperList(uint64 scHandlerID, uint64 *channelNumberArray)
 
 	//snprintf(message, sizeof(message), "SetWhisperList:%.1f", value);
 	ts3Functions.logMessage("SetWhisperList", LogLevel_DEBUG, "Gamevoice Plugin", 0);
-	snprintf(message, sizeof(message), "SetWhisperList:%s", channelNumberArray[0]);
 	OutputDebugString(message);
 	
 	if (channelNumberArray != NULL)
 	{
+		snprintf(message, sizeof(message), "SetWhisperList:%zu", channelNumberArray[0]);
+
 		OutputDebugString("Getting channels...");
 		
 		if(logOnError(ts3Functions.getChannelList(scHandlerID, &channels), "Error getting channel list"))
@@ -251,7 +253,7 @@ BOOL SetWhisperList(uint64 scHandlerID, uint64 *channelNumberArray)
 
 			if (channels[channelNumberArray[i]] != (uint64)NULL)
 			{
-				snprintf(message, sizeof(message), "channelId:%s", channels[channelNumberArray[i]]);
+				snprintf(message, sizeof(message), "channelId:%zu", channels[channelNumberArray[i]]);
 				OutputDebugString(message);
 
 				OutputDebugString("Getting clients in channel...");

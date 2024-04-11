@@ -90,7 +90,7 @@ if(NOT MSVC)
    if ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
        set (CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -stdlib=libc++")
    endif()
-endif(NOT MSVC)
+endif()
 
 # Preprocessor definitions
 if(CMAKE_BUILD_TYPE STREQUAL "Debug")
@@ -121,7 +121,7 @@ if(CMAKE_BUILD_TYPE STREQUAL "Release")
     )
     if(MSVC)
 		# Visual Studio C++
-        target_compile_options(${PROJECT_NAME} PRIVATE  /W3 /GL /EHsc /GS /O2 /MT /FC /WX-)
+    target_compile_options(${PROJECT_NAME} PRIVATE  /W3 /GL /EHsc /GS /MT /FC /WX-)
 	elseif ("${CMAKE_C_COMPILER_ID}" STREQUAL "GNU")
 		# gcc
 		 target_compile_options(${PROJECT_NAME} PRIVATE -O2 )

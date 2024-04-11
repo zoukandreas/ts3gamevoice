@@ -26,6 +26,8 @@
 #ifndef GAMEVOICE_FUNCTIONS_H
 #define GAMEVOICE_FUNCTIONS_H
 
+#include "stdafx.h"
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -40,7 +42,7 @@ typedef struct GameVoiceFunctions
 	/* Gets the effective command applied tp the device after a waitForCommand or waitForUserCommand
 	 * Effective command contains buttons (Command) that are activated or deactivated (Action)
 	 */
-	size_t (*getEffectiveCommand)(void);
+	byte (*getEffectiveCommand)(void);
 	/* Gets the last command received from the device during a waitForCommand or waitForUserCommand.
 	 */
 	byte (*getLastCommandReceived)(void);
@@ -56,17 +58,17 @@ typedef struct GameVoiceFunctions
 	/* Determines whether the specified button has been activated during a waitForcommand or waitForExternalCommand.
 	 * A button is activated if its a new command and different from the last feature sent.
 	 */
-	BOOL (*isButtonActivated)(size_t command);
+	BOOL (*isButtonActivated)(byte command);
 	/* Determines whether the specified button is active on the device.
 	 */
-	BOOL (*isButtonActive)(size_t command);
+	BOOL (*isButtonActive)(byte command);
 	/* Determines whether the specified button has been deactivated during a waitForcommand or waitForExternalCommand.
 	 * A button is deactivated if its a new command and different from the last feature sent.
 	 */
-	BOOL (*isButtonDeactivated)(size_t command);
+	BOOL (*isButtonDeactivated)(byte command);
 	/* Determines whether the specified button is inactive on the device.
 	 */
-	BOOL (*isButtonInactive)(size_t command);
+	BOOL (*isButtonInactive)(byte command);
 
 	// Device general methods
 	/* Blinks the device leds/button by activating & deactivating device buttons.
@@ -100,19 +102,19 @@ typedef struct GameVoiceFunctions
 	// Feature handling
 	/* Forces a feature to the device (sent immediately)
 	 */
-	BOOL (*forceFeature)(size_t command);
+	BOOL (*forceFeature)(byte command);
 	/* Sends a feature to the device when its available
 	 */
-	BOOL (*sendFeature)(size_t command);
+	BOOL (*sendFeature)(byte command);
 
 	// Button handling
 	/* Activate the specified button
 	*/
-	BOOL (*activateButton)(size_t command);
+	BOOL (*activateButton)(byte command);
 
 	/* Deactivate the specified button
 	*/
-	BOOL(*deactivateButton)(size_t command);
+	BOOL(*deactivateButton)(byte command);
 } GameVoiceFunctions;
 
 GameVoiceFunctions InitGameVoiceFunctions();

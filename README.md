@@ -7,18 +7,22 @@ This TeamSpeak 3 plugin provides support for the Microsoft SideWinder Game Voice
 ### Prerequisites
 
 * Microsoft SideWinder Game Voice hockey puck
-* Teamspeak 3 client
+* Teamspeak 3.6.0 client or later
 * Windows 7 or greater
 
 ### Installing
 
-1. Download the [release](https://github.com/ghoebilly/ts3gamevoice/releases) corresponding to your Teamspeak client version (see versioning below) and architecture    
+1. Download the [release](../../releases) corresponding to your Teamspeak client version (see versioning below) and architecture    
 	* win32 for 32-bit client
 	* win64 for 64-bit client
 2. Install the plugin by double-clicking on the **.ts3_plugin** file you just downloaded
     * The ts3_plugin files should have a Teamspeak 3 icon
 	* If a message prompts indicating Teamspeak 3 directory cannot be found, launch Teamspeak 3 first
 	* If you cannot install the plugin automatically, this is weird but try to extract the .ts3_plugin file (zip) in _TeamSpeak 3 Client\config_
+
+### Wiki
+
+[Wiki@ghoebilly](https://github.com/ghoebilly/ts3gamevoice/wiki)
 
 ## Building [![Build Status](https://travis-ci.org/ghoebilly/ts3gamevoice.svg?branch=master)](https://travis-ci.org/ghoebilly/ts3gamevoice)
 
@@ -35,9 +39,9 @@ Travis CI validation build uses a Windows CMake + gcc + ninja environment.
 
 ## Versioning
 
-We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](https://github.com/ghoebilly/ts3gamevoice/tags).
+We use [SemVer](http://semver.org/) for versioning. For the versions available, see the [tags on this repository](../../tags).
 
-The last digit of the version indicate the Teamspeak **API** compatibility : 1.4.23 for API 23.
+The last digit of the version indicate the Teamspeak **API** compatibility : 1.6.0 for API 26.
 
 ## Authors
 
