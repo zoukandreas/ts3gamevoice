@@ -327,8 +327,6 @@ static void findDevice(int usbVid, int usbPid)
 
 	GUID GUID_DEVINTERFACE_USB_DEVICE = {0x4d1e55b2, 0xf16f, 0x11cf, 0x88, 0xcb, 0x00, 0x11, 0x11, 0x00, 0x00, 0x30};
 
-	char debugOutput[40];
-
 	// Device ID
 	OutputDebugString("findDevice: Seaching for device ID below");
 	snprintf(usbId, 18, "vid_%04x&pid_%04x", usbVid, usbPid);
@@ -664,7 +662,7 @@ static byte getInputReport()
 {
 	// Variables for tracking how much is read
 	DWORD bytesRead = 0;
-	byte returnValue= NULL;
+	byte returnValue = 0;
 	unsigned char *reportBuffer = (unsigned char *)malloc(65);
 	unsigned char * unmanagedReportBuffer = &reportBuffer[0];
 	char strCommandId[40];
@@ -673,7 +671,7 @@ static byte getInputReport()
 	if (deviceAttached == FALSE)
 	{
 		// There is no device to communicate with... Exit with error status
-		return NULL;
+		return 0;
 	}
 
 	// The first byte of the report buffer should be set to zero (this is not
@@ -710,7 +708,7 @@ static byte getFeature()
 	if (deviceAttached == FALSE)
 	{
 		// There is no device to communicate with... Exit with error status
-		return NULL;
+		return 0;
 	}
 
 	// The first byte of the feature buffers should be set to zero (this is not
@@ -731,7 +729,7 @@ static byte getFeature()
 	else
 		OutputDebugString("getFeature: /!\\ Failed to get feature to the USB device");
 
-	return NULL;
+	return 0;
 }
 
 // The following method sends a feature request to the USB device (the device must have been found first!)

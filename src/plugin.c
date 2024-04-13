@@ -33,11 +33,14 @@
 #include <string.h>
 #include <assert.h>
 #include "stdafx.h"
-#include "public_errors.h"
-#include "public_errors_rare.h"
-#include "public_definitions.h"
-#include "public_rare_definitions.h"
+
+#include "teamlog/logtypes.h"
+#include "teamspeak/public_errors.h"
+#include "teamspeak/public_errors_rare.h"
+#include "teamspeak/public_definitions.h"
+#include "teamspeak/public_rare_definitions.h"
 #include "ts3_functions.h"
+
 #include "ts3_helpers.h"
 #include "plugin.h"
 #include "gamevoice_functions.h"
@@ -57,7 +60,7 @@ static struct GameVoiceFunctions gameVoiceFunctions;
 #define _strcpy(dest, destSize, src) { strncpy(dest, src, destSize-1); (dest)[destSize-1] = '\0'; }
 #endif
 
-#define PLUGIN_API_VERSION 23
+#define PLUGIN_API_VERSION 26
 
 #define PATH_BUFSIZE 512
 #define COMMAND_BUFSIZE 128
@@ -120,15 +123,15 @@ DWORD WINAPI GameVoiceThread(LPVOID pData)
 		if (gameVoiceFunctions.waitForExternalCommand() && pluginRunning)
 		{
 			inputValue = gameVoiceFunctions.readCommand();
-			snprintf(debugOutput, 50, "GameVoiceThread:readCommand:%d", inputValue);
+			snprintf(debugOutput, sizeof(debugOutput), "GameVoiceThread:readCommand:%u", inputValue);
 			OutputDebugString(debugOutput);
 			ts3Functions.logMessage(debugOutput, LogLevel_DEBUG, "GameVoice Plugin", 0);
 
-			snprintf(debugOutput, 50, "GameVoiceThread:lastFeatureSent:%d", gameVoiceFunctions.getLastFeatureSent());
+			snprintf(debugOutput, sizeof(debugOutput), "GameVoiceThread:lastFeatureSent:%u", gameVoiceFunctions.getLastFeatureSent());
 			OutputDebugString(debugOutput);
-			snprintf(debugOutput, 50, "GameVoiceThread:lastCommandReceived:%d", gameVoiceFunctions.getLastCommandReceived());
+			snprintf(debugOutput, sizeof(debugOutput), "GameVoiceThread:lastCommandReceived:%u", gameVoiceFunctions.getLastCommandReceived());
 			OutputDebugString(debugOutput);
-			//snprintf(debugOutput, 50, "GameVoiceThread:previousCommandReceived:%d", gameVoiceFunctions.getPreviousCommandReceived());
+			//snprintf(debugOutput, sizeof(debugOutput), "GameVoiceThread:previousCommandReceived:%u", gameVoiceFunctions.getPreviousCommandReceived());
 			//OutputDebugString(debugOutput);
 
 			//  Ignores impossible action
@@ -228,7 +231,7 @@ const char* ts3plugin_name() {
 
 /* Plugin version */
 const char* ts3plugin_version() {
-	return "1.5.23";
+	return "1.6.0";
 }
 
 /* Plugin API version. Must be the same as the clients API major version, else the plugin fails to load. */
@@ -280,6 +283,10 @@ int ts3plugin_init() {
 		ts3Functions.logMessage("Cannot find GameVoice USB device, plugin unloaded.", LogLevel_INFO, "GameVoice Plugin", 0);
 		return 1;
 		// TODO: Check if we don't have to return -2 instead
+		/* 0 = success, 1 = failure, -2 = failure but client will not show a "failed to load" warning
+         * -2 is a very special case and should only be used if a plugin displays a dialog (e.g. overlay) asking the user to disable
+		 * the plugin again, avoiding the show another dialog by the client telling the user the plugin failed to load.
+		 * For normal case, if a plugin really failed to load because of an error, the correct return value is 1. */
 	}
 
 	/*if ( GetLastError()!=NO_ERROR &&
@@ -1101,7 +1108,7 @@ void ts3plugin_onClientBanFromServerEvent(uint64 serverConnectionHandlerID, anyI
 int ts3plugin_onClientPokeEvent(uint64 serverConnectionHandlerID, anyID fromClientID, const char* pokerName, const char* pokerUniqueIdentity, const char* message, int ffIgnored) {
 	anyID myID;
 
-	printf("PLUGIN onClientPokeEvent: %llu %d %s %s %d\n", (long long unsigned int)serverConnectionHandlerID, fromClientID, pokerName, message, ffIgnored);
+	printf("PLUGIN onClientPokeEvent: %llu %u %s %s %d\n", (long long unsigned int)serverConnectionHandlerID, fromClientID, pokerName, message, ffIgnored);
 
 	/* Check if the Friend/Foe manager has already blocked this poke */
 	if (ffIgnored) {
@@ -1130,13 +1137,13 @@ void ts3plugin_onClientSelfVariableUpdateEvent(uint64 serverConnectionHandlerID,
 	{
 		if (atoi(newValue) == INPUT_ACTIVE)
 		{
-			snprintf(debugOutput, 50, "deactivateButton(COMMAND)", atoi(newValue));
+			snprintf(debugOutput, sizeof(debugOutput), "deactivateButton(COMMAND) %d", atoi(newValue));
 			OutputDebugString(debugOutput);
 			gameVoiceFunctions.deactivateButton(COMMAND);
 		}
 		else
 		{
-			snprintf(debugOutput, 50, "activateButton(COMMAND)", atoi(newValue));
+			snprintf(debugOutput, sizeof(debugOutput), "activateButton(COMMAND) %d", atoi(newValue));
 			OutputDebugString(debugOutput);
 			gameVoiceFunctions.activateButton(COMMAND);
 		}
